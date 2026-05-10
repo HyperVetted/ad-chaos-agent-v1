@@ -39,6 +39,8 @@ CLIENT1           Windows 10 Pro
  - RAM:           2 GB minimum
 ```
 
+![VirtualBox showing DC1 running and CL1 powered off](9a93398c-9362-4619-bac0-885db898f77c.png)
+
 ### Domain Structure
 
 ```
@@ -88,6 +90,8 @@ MemberOf:         (empty - remains low-privilege)
 Purpose:          Future delegated execution for controlled failure injection
 ```
 
+![Chaos Agent service account properties in ADUC](7d4fc2c7-01bd-4014-bdf4-74a5aa7afa1a.png)
+
 ### Lab Users
 
 10 test identities distributed across departments:
@@ -101,6 +105,8 @@ All accounts are:
 - Assigned to departments (Title, Department attributes)
 - Members of relevant groups
 - Used for break/fix scenarios and access testing
+
+![Lab users in ADUC Saved Queries view](e6c6decc-e645-4976-8100-35008b5e62cc.png)
 
 ## How It Works
 
@@ -163,6 +169,8 @@ Get-ADUser -Filter "Department -eq 'HR'" |
   Remove-ADGroupMember -Identity "HR" -Confirm:$false
 ```
 
+![chaos.ps1 introducing a failure — dlee removed from Finance group](48bd2caf-a02e-4168-807f-f3e65c021d2b.png)
+
 Not yet implemented. Design patterns pending.
 
 **`verify.ps1`**
@@ -183,6 +191,10 @@ Get-ADUser -Filter "LockedOut -eq `$true"
 Get-ADUser -Properties PasswordExpired, PasswordNeverExpires |
   Where-Object { $_.PasswordExpired -eq $true }
 ```
+
+![verify.ps1 detecting a broken state — dlee missing from Finance](d6d4b4a1-e05c-47b9-8fd4-fd9c4b7b88ef.png)
+
+![verify.ps1 confirming clean baseline state — all accounts FIXED](8ec88610-d8b5-4bf7-a015-218fbe5e9e98.png)
 
 Not yet implemented. Design patterns pending.
 
@@ -216,6 +228,10 @@ A structured snapshot of the clean domain state:
 ```
 
 Captured once after setup, used as a reference point for `verify.ps1` comparisons and for resetting the lab.
+
+**Remediation in action — fixing dlee's missing group membership:**
+
+![Remediation — Add-ADGroupMember restoring dlee to Finance](488aed6d-0b04-4f76-aae9-bf70ddabbf99.png)
 
 ## Use Cases
 
